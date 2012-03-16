@@ -3,13 +3,13 @@
  * Copyright 2012 Martin Srank (http://smasty.net)
  */
 
-namespace CliMate;
+namespace CLImate;
 
 
 /**
- * Base CliMate class.
+ * Base CLImate class.
  */
-class CLI {
+class Base {
 
 
 	/**
