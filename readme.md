@@ -1,11 +1,11 @@
-CliMate - Your mate for PHP CLI apps
-====================================
+CLI mate - Your mate for PHP CLI apps
+=====================================
 
 Early development stage.
 -----------------------
 
 The MIT License
-===============
+---------------
 
 Copyright (c) 2012 Smasty, http://smasty.net/
 
