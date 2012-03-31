@@ -133,7 +133,7 @@ class IO {
 	 * @param string $message Message to show under the list.
 	 * @return int Index of the chosen option.
 	 */
-	public function menu($items, $default = null, $message = 'Choose an option'){
+	public function menu(array $items, $default = null, $message = 'Choose an option'){
 		// Keys might not be numeric
 		$map = array_values($items);
 
