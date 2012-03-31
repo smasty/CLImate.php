@@ -7,9 +7,9 @@ namespace CLImate;
 
 
 /**
- * Base CLImate class.
+ * Input/Output handling.
  */
-class Base {
+class IO {
 
 
 	/**
@@ -24,28 +24,35 @@ class Base {
 
 
 	/**
-	 * Write given text to standard output.
+	 * Write given text to standard output. Supports sprintf() syntax.
 	 * @param string $text
-	 * @param bool $newline Whether to append a new line or not.
 	 * @return void
 	 */
-	public function write($text = '', $newline = true){
-		return $this->render($newline ? "$text\n" : $text, STDOUT);
+	public function write($text){
+		return $this->render(call_user_func_array('sprintf', func_get_args()), STDOUT);
 	}
 
 
 	/**
-	 * Write given text to standard error output.
+	 * Write given text to standard output and append a newline. Supports sprintf() syntax.
+	 * @param string $text
+	 * @return void
+	 */
+	public function line($text = ''){
+		$args = func_get_args();
+		$args[0] = isset($args[0]) ? "$args[0]\n" : "\n";
+		return call_user_func_array(array($this, 'write'), $args);
+	}
+
+
+	/**
+	 * Write given text to standard error output. Supports sprintf() syntax.
 	 *
 	 * Optionally can exit the program with the given error code.
 	 * @param string $message Error message.
-	 * @param int $code Error code.
-	 * @param bool $newline Whether to append a new line or not.
 	 */
-	public function error($message = '', $code = null, $newline = true){
-		$this->render($newline ? "$message\n" : $message, STDERR);
-		if((int) $code)
-			exit((int) $code);
+	public function error($message){
+		return $this->render(call_user_func_array('sprintf', func_get_args()), STDERR);
 	}
 
 
@@ -83,7 +90,7 @@ class Base {
 			$question .= " [$default]";
 
 		while(true){
-			$this->write($question . $ending, false);
+			$this->write($question . $ending);
 			$input = $this->read();
 			if($input || $default)
 				return $input ?: $default;
@@ -133,9 +140,9 @@ class Base {
 		// Format options
 		$size = strlen(count($map)+1);
 		foreach($map as $k => $v){
-			$this->write(sprintf("  %{$size}d. %s", ++$k, (string) $v));
+			$this->line("  %{$size}d. %s", ++$k, (string) $v);
 		}
-		$this->write();
+		$this->line();
 
 		while(true){
 			$input = $this->prompt($message, $default);
@@ -145,7 +152,7 @@ class Base {
 					return array_search($map[$input], $items);
 
 				if($input < 0 || $input >= count($map))
-					$this->error("Menu selection out of range.");
+					$this->error("Menu selection out of range.\n");
 			}
 		}
 	}
