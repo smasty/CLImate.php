@@ -13,43 +13,33 @@ class IO {
 
 
 	/**
-	 * Render given text into a resource.
+	 * Render given text.
 	 * @param string $text
-	 * @param resource $resource
-	 * @param array $args
-	 * @return void
+	 * @return string Rendered text
 	 */
-	public static function render($text, $resource, array $args = array()){
-		if(isset($args[0]) && is_array($args[0])){
-			$named = $args[0];
-			array_shift($args);
+	public static function render($text){
+		$args = func_get_args();
+
+		if(count($args) == 1)
+			return $text;
+
+		if(is_array($args[1])){
+			foreach($args[1] as $key => $val)
+				$text = str_replace("{:$key}", $val, $text);
+			return $text;
 		}
 
-		// sprintf() arguments
-		$text = vsprintf($text, $args);
-
-		// Named arguments
-		if(isset($named)){
-			$replacements = array();
-			foreach($named as $k => $v)
-				$replacements["{:$k}"] = $v;
-
-			$text = strtr($text, $replacements);
-		}
-
-		fwrite($resource, $text);
+		return call_user_func_array('sprintf', $args);
 	}
 
 
 	/**
 	 * Write given text to standard output. Supports sprintf() syntax.
 	 * @param string $text
-	 * @return void
+	 * @return int|FALSE
 	 */
 	public static function write($text){
-		$args = func_get_args();
-		array_shift($args);
-		return static::render($text, STDOUT, $args);
+		return fwrite(STDOUT, call_user_func_array('static::render', func_get_args()));
 	}
 
 
@@ -79,11 +69,12 @@ class IO {
 	 *
 	 * Optionally can exit the program with the given error code.
 	 * @param string $message Error message.
+	 * @return int|FALSE
 	 */
 	public static function error($message){
 		$args = func_get_args();
 		array_shift($args);
-		return static::render($text, STDERR, $args);
+		return fwrite(STDERR, call_user_func_array('static::render', func_get_args()));
 	}
 
 
@@ -186,6 +177,16 @@ class IO {
 					static::error("Menu selection out of range.\n");
 			}
 		}
+	}
+
+
+	/**
+	 * Number of columns in terminal.
+	 * @return int
+	 * @todo Better solution maybe?
+	 */
+	public static function columns(){
+		return (int) exec('/usr/bin/env tput cols');
 	}
 
 
