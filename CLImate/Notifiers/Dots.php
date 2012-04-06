@@ -17,7 +17,7 @@ class Dots extends CLImate\Notifier {
 
 
 	/** @var string */
-	protected $format = "{:msg} {:dots}  ({:elapsed},  {:speed}/s)";
+	protected $format = "{:msg} {:dots}  ({:elapsed}, {:speed}/s)";
 
 	/** @var int */
 	protected $dots;
@@ -44,7 +44,8 @@ class Dots extends CLImate\Notifier {
 	/**
 	 * Set display format.
 	 *
-	 * Availble named arguments: msg, dots, elapsed, speed.
+	 * Availble named arguments: `msg`, `dots`, `elapsed`, `speed`, `ticks`.
+	 * Default is `{:msg} {:dots}  ({:elapsed}, {:speed}/s)`.
 	 * @param string $format
 	 * @return void
 	 */
@@ -61,10 +62,11 @@ class Dots extends CLImate\Notifier {
 		$msg = $this->message;
 		$elapsed = $this->formatTime($this->elapsed());
 		$speed = round($this->speed());
+		$ticks = number_format($this->iterator);
 
 		$i = $this->last ? $this->dots-1 : $this->i++ % $this->dots;
 		$dots = str_pad(str_repeat('.', $i), $this->dots);
-		IO::write($this->format, compact('msg', 'dots', 'elapsed', 'speed'));
+		IO::write($this->format, compact('msg', 'dots', 'elapsed', 'speed', 'ticks'));
 	}
 
 
