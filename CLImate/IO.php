@@ -40,7 +40,7 @@ class IO {
 	 */
 	public static function line($text = ''){
 		$args = func_get_args();
-		$args[0] = isset($args[0]) ? "$args[0]\n" : "\n";
+		$args[0] = $text ? "$text\n" : "\n";
 		return call_user_func_array('static::write', $args);
 	}
 

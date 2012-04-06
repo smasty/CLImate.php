@@ -25,6 +25,10 @@ class Spinner extends CLImate\Notificator {
 	private $i = 0;
 
 
+	/**
+	 * Render the notificator.
+	 * @return void
+	 */
 	public function display(){
 		$id = $this->i++ % strlen($this->chars);
 		$spinner = $this->last ? ' ' : $this->chars[$id];

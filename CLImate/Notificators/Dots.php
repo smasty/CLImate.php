@@ -25,6 +25,14 @@ class Dots extends CLImate\Notificator {
 	private $i = 0;
 
 
+	/**
+	 * Create the notificator.
+	 * @param string $message Message to display next to dots
+	 * @param int $dots Number of dots to iterate through
+	 * @param int $interval Refresh interval in miliseconds
+	 * @return void
+	 * @throws \InvalidArgumentException
+	 */
 	public function __construct($message, $dots = 3, $interval = 300){
 		$this->dots = (int) $dots + 1;
 		parent::__construct($message, $interval);
@@ -33,6 +41,10 @@ class Dots extends CLImate\Notificator {
 	}
 
 
+	/**
+	 * Render the notificator.
+	 * @return void
+	 */
 	public function display(){
 		$i = $this->last ? $this->dots-1 : $this->i++ % $this->dots;
 		$dots = str_pad(str_repeat('.', $i), $this->dots);
