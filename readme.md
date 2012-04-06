@@ -6,9 +6,9 @@
 ### Input/Output
 
 Reading from standard input, as well as writing to standard output and error.
-Methods for prompting for questions, choosing from choices (`[y/n/?]`) and menus.
+Methods for prompting for questions, choosing from choices `[y/n/?]` and menus.
 
-### Argument handling
+### Argument handling (draft)
 
 Class for parsing all types of command-line arguments.
 
@@ -18,7 +18,7 @@ Various notifiers:
 
 - Spinner - `-\|/`
 - Dots - `Loading...`
-- Progress bar - `[===>   ] 00:12`
+- Progress bar - `[===>   ]`
 
 
 ## Yet to be implemented
