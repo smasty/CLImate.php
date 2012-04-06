@@ -16,14 +16,14 @@ Class for parsing all types of command-line arguments.
 
 Various notifiers:
 
-- Spinner (`-\|/`)
-- Dots (`Loading...`)
-- Progress bar (`48% [====>   ] 00:12`)
+- Spinner - `-\|/`
+- Dots - `Loading...`
+- Progress bar - `[===>   ] 00:12`
 
 
 ## Yet to be implemented
 
-- Tables,
+- Tables
 - Colorized output
 - Finish argument handling
 - Command-line applications infrastructure
