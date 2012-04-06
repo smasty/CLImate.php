@@ -3,17 +3,17 @@
  * Copyright 2012 Martin Srank (http://smasty.net)
  */
 
-namespace CLImate\Notificators;
+namespace CLImate\Notifiers;
 
 use CLImate,
 	CLImate\IO;
 
 
 /**
- * Notificator showing string of dots.
+ * Notifier showing string of dots.
  * @todo printf named args
  */
-class Dots extends CLImate\Notificator {
+class Dots extends CLImate\Notifier {
 
 
 	/** @var string */

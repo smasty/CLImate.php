@@ -9,7 +9,7 @@ namespace CLImate;
 /**
  * Abstract base class for all notificators - progress bars, spinners, etc.
  */
-abstract class Notificator {
+abstract class Notifier {
 
 	/** @var int */
 	protected $interval;
@@ -29,8 +29,9 @@ abstract class Notificator {
 	/** @var bool */
 	protected $last = false;
 
+
 	/**
-	 * Create the notificator.
+	 * Create the notifier.
 	 * @param int $interval
 	 * @return void
 	 */

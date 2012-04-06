@@ -3,7 +3,7 @@
  * Copyright 2012 Martin Srank (http://smasty.net)
  */
 
-namespace CLImate\Notificators;
+namespace CLImate\Notifiers;
 
 use CLImate,
 	CLImate\IO;
@@ -13,7 +13,7 @@ use CLImate,
  * Basic ASCII spinner.
  * @todo printf named args
  */
-class Spinner extends CLImate\Notificator {
+class Spinner extends CLImate\Notifier {
 
 
 	/** @var string */
