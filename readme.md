@@ -1,11 +1,31 @@
-CLI mate - Your mate for PHP CLI apps
-=====================================
+# CLI mate - Your mate for PHP CLI apps
 
-Early development stage.
------------------------
+## Early development stage.
 
-The MIT License
----------------
+
+## Features
+
+### Input/Output (CLImate\IO)
+
+#### `write()`
+
+Write data to standard output. Supports `sprintf()`-like syntax and named **arguments**.
+
+#### error()
+
+Write data to standard error.
+
+#### read()
+
+Read data from standard input. Supports `sscanf()`-like syntax.
+
+#### prompt()
+
+Prompt for answer.
+
+
+## The MIT License
+
 
 Copyright (c) 2012 Smasty, http://smasty.net/
 
