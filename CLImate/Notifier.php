@@ -32,7 +32,7 @@ abstract class Notifier {
 
 	/**
 	 * Create the notifier.
-	 * @param int $interval
+	 * @param int $interval Refresh interval
 	 * @return void
 	 */
 	public function __construct($message, $interval = 100){
