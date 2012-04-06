@@ -26,6 +26,18 @@ class Spinner extends CLImate\Notifier {
 
 
 	/**
+	 * Set display format.
+	 *
+	 * Availble named arguments: msg, spinner, elapsed, speed.
+	 * @param string $format
+	 * @return void
+	 */
+	public function format($format){
+		$this->format = $format;
+	}
+
+
+	/**
 	 * Render the notificator.
 	 * @return void
 	 */
