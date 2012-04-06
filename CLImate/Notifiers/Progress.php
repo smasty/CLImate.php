@@ -73,8 +73,8 @@ abstract class Progress extends CLImate\Notifier {
 
 
 	public function stop(){
-		parent::stop();
 		$this->iterator = $this->total;
+		parent::stop();
 	}
 
 
