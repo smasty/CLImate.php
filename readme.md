@@ -1,6 +1,4 @@
-# CLI mate - Your mate for PHP CLI apps
-
-## Early development stage.
+# CLI mate - Your mate for PHP CLI apps. Early development stage.
 
 
 ## Implemented features
@@ -10,7 +8,7 @@
 Reading from standard input, as well as writing to standard output and error.
 Methods for prompting for questions, choosing from choices (`[y/n/?]`) and menus.
 
-### Argument parsing (`CLImate\Arguments`)
+### Argument handling (`CLImate\Arguments`) - draft
 
 Class for parsing all types of command-line arguments.
 
@@ -18,9 +16,17 @@ Class for parsing all types of command-line arguments.
 
 Various notifiers:
 
-- Spinner
+- Spinner (`-\|/`)
 - Dots (`Loading...`)
-- Progress bar
+- Progress bar (`48% [====>   ] 00:12`)
+
+
+## Yet to be implemented
+
+- Tables,
+- Colorized output
+- Finish argument handling
+- Command-line applications infrastructure
 
 
 ## The MIT License
