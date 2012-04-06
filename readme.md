@@ -1,14 +1,14 @@
-# CLI mate - Your mate for PHP CLI apps. Early development stage.
+# CLI mate - Your mate for PHP CLI apps. (Early dev stage).
 
 
 ## Implemented features
 
-### Input/Output (`CLImate\IO`)
+### Input/Output
 
 Reading from standard input, as well as writing to standard output and error.
 Methods for prompting for questions, choosing from choices (`[y/n/?]`) and menus.
 
-### Argument handling (`CLImate\Arguments`) - draft
+### Argument handling
 
 Class for parsing all types of command-line arguments.
 
