@@ -37,7 +37,10 @@ abstract class Notifier {
 	 */
 	public function __construct($message, $interval = 100){
 		$this->message = (string) $message;
-		$this->interval = abs((int) $interval);
+		$this->interval = (int) $interval;
+
+		if($interval <= 0)
+			throw new \InvalidArgumentException('Interval must be positive.');
 	}
 
 
@@ -101,12 +104,22 @@ abstract class Notifier {
 
 
 	/**
+	 * Increase the number of performed ticks by given value.
+	 * @param int $num
+	 * @return void
+	 */
+	protected function increment($num = 1){
+		$this->iterator += $num;
+	}
+
+
+	/**
 	 * Perform a tick.
 	 * @param int $interval Number of ticks to perform
 	 * @return void
 	 */
-	public function tick($interval = 1){
-		$this->iterator += $interval;
+	public function tick($ticks = 1){
+		$this->increment($ticks);
 
 		if($this->shouldRefresh()){
 			IO::cr();
