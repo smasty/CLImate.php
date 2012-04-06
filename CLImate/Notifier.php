@@ -32,6 +32,7 @@ abstract class Notifier {
 
 	/**
 	 * Create the notifier.
+	 * @param string $message Message to display
 	 * @param int $interval Refresh interval
 	 * @return void
 	 */
