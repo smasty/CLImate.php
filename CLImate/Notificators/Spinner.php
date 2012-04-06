@@ -5,7 +5,8 @@
 
 namespace CLImate\Notificators;
 
-use CLImate;
+use CLImate,
+	CLImate\IO;
 
 
 /**
@@ -27,7 +28,7 @@ class Spinner extends CLImate\Notificator {
 	public function display(){
 		$id = $this->i++ % strlen($this->chars);
 		$spinner = $this->last ? ' ' : $this->chars[$id];
-		printf($this->format, $this->message, $spinner, $this->formatTime($this->elapsed()), round($this->speed()));
+		IO::write($this->format, $this->message, $spinner, $this->formatTime($this->elapsed()), round($this->speed()));
 	}
 
 

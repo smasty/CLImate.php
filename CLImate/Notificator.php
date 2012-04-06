@@ -8,7 +8,6 @@ namespace CLImate;
 
 /**
  * Abstract base class for all notificators - progress bars, spinners, etc.
- * @todo Use CLImate\IO for output
  */
 abstract class Notificator {
 
@@ -109,7 +108,7 @@ abstract class Notificator {
 		$this->iterator += $interval;
 
 		if($this->shouldRefresh()){
-			echo "\r";
+			IO::cr();
 			$this->display();
 		}
 	}
@@ -120,10 +119,10 @@ abstract class Notificator {
 	 * @return void
 	 */
 	public function stop(){
-		echo "\r";
+		IO::cr();
 		$this->last = true;
 		$this->display();
-		echo "\n";
+		IO::line();
 	}
 
 

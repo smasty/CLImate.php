@@ -5,7 +5,8 @@
 
 namespace CLImate\Notificators;
 
-use CLImate;
+use CLImate,
+	CLImate\IO;
 
 
 /**
@@ -35,7 +36,7 @@ class Dots extends CLImate\Notificator {
 	public function display(){
 		$i = $this->last ? $this->dots-1 : $this->i++ % $this->dots;
 		$dots = str_pad(str_repeat('.', $i), $this->dots);
-		printf($this->format, $this->message, $dots, $this->formatTime($this->elapsed()), round($this->speed()));
+		IO::write($this->format, $this->message, $dots, $this->formatTime($this->elapsed()), round($this->speed()));
 	}
 
 
