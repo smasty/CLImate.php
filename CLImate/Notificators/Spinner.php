@@ -17,7 +17,7 @@ class Spinner extends CLImate\Notificator {
 
 
 	/** @var string */
-	protected $format = "%s %s  (%s,  %d/s)"; // {message} {spinner}  ({elapsed}, {speed}/s)
+	protected $format = "{:msg} {:spinner}  ({:elapsed},  {:speed}/s)";
 
 	/** @var string */
 	protected $chars = '-\|/';
@@ -30,9 +30,13 @@ class Spinner extends CLImate\Notificator {
 	 * @return void
 	 */
 	public function display(){
+		$msg = $this->message;
+		$elapsed = $this->formatTime($this->elapsed());
+		$speed = round($this->speed());
+
 		$id = $this->i++ % strlen($this->chars);
 		$spinner = $this->last ? ' ' : $this->chars[$id];
-		IO::write($this->format, $this->message, $spinner, $this->formatTime($this->elapsed()), round($this->speed()));
+		IO::write($this->format, compact('msg', 'spinner', 'elapsed', 'speed'));
 	}
 
 

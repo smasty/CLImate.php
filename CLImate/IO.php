@@ -15,11 +15,29 @@ class IO {
 	/**
 	 * Render given text into a resource.
 	 * @param string $text
-	 * @param string $resource Defaults to STDOUT.
+	 * @param resource $resource
+	 * @param array $args
 	 * @return void
 	 */
-	public static function render($text, $resource = null){
-		fwrite($resource ?: STDOUT, $text);
+	public static function render($text, $resource, array $args = array()){
+		if(isset($args[0]) && is_array($args[0])){
+			$named = $args[0];
+			array_shift($args);
+		}
+
+		// sprintf() arguments
+		$text = vsprintf($text, $args);
+
+		// Named arguments
+		if(isset($named)){
+			$replacements = array();
+			foreach($named as $k => $v)
+				$replacements["{:$k}"] = $v;
+
+			$text = strtr($text, $replacements);
+		}
+
+		fwrite($resource, $text);
 	}
 
 
@@ -29,7 +47,9 @@ class IO {
 	 * @return void
 	 */
 	public static function write($text){
-		return static::render(call_user_func_array('sprintf', func_get_args()), STDOUT);
+		$args = func_get_args();
+		array_shift($args);
+		return static::render($text, STDOUT, $args);
 	}
 
 
@@ -61,7 +81,9 @@ class IO {
 	 * @param string $message Error message.
 	 */
 	public static function error($message){
-		return static::render(call_user_func_array('sprintf', func_get_args()), STDERR);
+		$args = func_get_args();
+		array_shift($args);
+		return static::render($text, STDERR, $args);
 	}
 
 
