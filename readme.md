@@ -3,25 +3,24 @@
 ## Early development stage.
 
 
-## Features
+## Implemented features
 
-### Input/Output (CLImate\IO)
+### Input/Output (`CLImate\IO`)
 
-#### `write()`
+Reading from standard input, as well as writing to standard output and error.
+Methods for prompting for questions, choosing from choices (`[y/n/?]`) and menus.
 
-Write data to standard output. Supports `sprintf()`-like syntax and named **arguments**.
+### Argument parsing (`CLImate\Arguments`)
 
-#### error()
+Class for parsing all types of command-line arguments.
 
-Write data to standard error.
+### Notifiers
 
-#### read()
+Various notifiers:
 
-Read data from standard input. Supports `sscanf()`-like syntax.
-
-#### prompt()
-
-Prompt for answer.
+- Spinner
+- Dots (`Loading...`)
+- Progress bar
 
 
 ## The MIT License
