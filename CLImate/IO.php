@@ -18,7 +18,7 @@ class IO {
 	 * @param string $resource Defaults to STDOUT.
 	 * @return void
 	 */
-	public function render($text, $resource = null){
+	public static function render($text, $resource = null){
 		fwrite($resource ?: STDOUT, $text);
 	}
 
@@ -28,8 +28,8 @@ class IO {
 	 * @param string $text
 	 * @return void
 	 */
-	public function write($text){
-		return $this->render(call_user_func_array('sprintf', func_get_args()), STDOUT);
+	public static function write($text){
+		return static::render(call_user_func_array('sprintf', func_get_args()), STDOUT);
 	}
 
 
@@ -38,10 +38,19 @@ class IO {
 	 * @param string $text
 	 * @return void
 	 */
-	public function line($text = ''){
+	public static function line($text = ''){
 		$args = func_get_args();
 		$args[0] = isset($args[0]) ? "$args[0]\n" : "\n";
-		return call_user_func_array(array($this, 'write'), $args);
+		return call_user_func_array('static::write', $args);
+	}
+
+
+	/**
+	 * Carriage return.
+	 * @return void
+	 */
+	public static function cr(){
+		return static::write("\r");
 	}
 
 
@@ -51,8 +60,8 @@ class IO {
 	 * Optionally can exit the program with the given error code.
 	 * @param string $message Error message.
 	 */
-	public function error($message){
-		return $this->render(call_user_func_array('sprintf', func_get_args()), STDERR);
+	public static function error($message){
+		return static::render(call_user_func_array('sprintf', func_get_args()), STDERR);
 	}
 
 
@@ -62,7 +71,7 @@ class IO {
 	 * @return string
 	 * @throws \Exception If ^D is caught during input.
 	 */
-	public function read($format = null){
+	public static function read($format = null){
 		if($format)
 			fscanf(STDIN, $format . "\n", $line);
 		else
@@ -85,13 +94,13 @@ class IO {
 	 * @param string $ending A string to append to the question.
 	 * @return string
 	 */
-	public function prompt($question, $default = null, $ending = ': '){
+	public static function prompt($question, $default = null, $ending = ': '){
 		if($default && strpos($question, '[') === false)
 			$question .= " [$default]";
 
 		while(true){
-			$this->write($question . $ending);
-			$input = $this->read();
+			static::write($question . $ending);
+			$input = static::read();
 			if($input || $default)
 				return $input ?: $default;
 		}
@@ -105,7 +114,7 @@ class IO {
 	 * @param string $default Default choice, will be displayed uppercased.
 	 * @return string
 	 */
-	public function choose($question, $choices = 'yn', $default = 'n'){
+	public static function choose($question, $choices = 'yn', $default = 'n'){
 		if(is_array($choices))
 			$choices = implode('', $choices);
 
@@ -113,10 +122,10 @@ class IO {
 		$choices = str_replace($default, strtoupper($default), strtolower($choices));
 
 		// Separate choices by slash.
-		$choices = join('/', str_split($choices));
+		$choices = implode('/', str_split($choices));
 
 		while(true){
-			$input = $this->prompt(sprintf("%s [%s] ", $question, $choices), $default, '');
+			$input = static::prompt(sprintf("%s [%s] ", $question, $choices), $default, '');
 
 			if(stripos($choices, $input) !== false)
 				return strtolower($input);
@@ -133,26 +142,26 @@ class IO {
 	 * @param string $message Message to show under the list.
 	 * @return int Index of the chosen option.
 	 */
-	public function menu(array $items, $default = null, $message = 'Choose an option'){
+	public static function menu(array $items, $default = null, $message = 'Choose an option'){
 		// Keys might not be numeric
 		$map = array_values($items);
 
 		// Format options
 		$size = strlen(count($map)+1);
 		foreach($map as $k => $v){
-			$this->line("  %{$size}d. %s", ++$k, (string) $v);
+			static::line("  %{$size}d. %s", ++$k, (string) $v);
 		}
-		$this->line();
+		static::line();
 
 		while(true){
-			$input = $this->prompt($message, $default);
+			$input = static::prompt($message, $default);
 
 			if(is_numeric($input)){
 				if(isset($map[--$input]))
 					return array_search($map[$input], $items);
 
 				if($input < 0 || $input >= count($map))
-					$this->error("Menu selection out of range.\n");
+					static::error("Menu selection out of range.\n");
 			}
 		}
 	}
