@@ -8,7 +8,6 @@ namespace CLImate;
 
 /**
  * Class for presenting tabular data.
- * @todo Refactor render() - resetDisplay(), setFormat(), set STR_PAD.
  * @todo sort()
  */
 class Table {
@@ -22,6 +21,9 @@ class Table {
 
 	/** @var array */
 	protected $format = array();
+
+	/** @var int */
+	protected $align = array();
 
 	/** @var array */
 	private $columnLength = array();
@@ -121,6 +123,9 @@ class Table {
 		if($format !== null)
 			call_user_func_array(array($this, 'setFormat'), func_get_args());
 
+		if(!is_array($this->align))
+			$this->align = array_fill(0, count($this->header), $this->align);
+
 		// Compute length of columns
 		$this->setColumnLength($this->header, false);
 		foreach($this->rows as $row)
@@ -132,6 +137,31 @@ class Table {
 
 		foreach($this->rows as $row)
 			$this->renderRow($row);
+
+		return $this;
+	}
+
+
+	/**
+	 * Set align of columns.
+	 *
+	 * Accepts either a single value to set global align,
+	 * or an array/list of arguments to set align for particular columns.
+	 * @param string[] $align `left` (default), `right` or `center`.
+	 * @return Table fluent interface
+	 */
+	public function align($align){
+		if(func_num_args() > 1 && !is_array($a = func_get_arg(0)) && !($a instanceof \Traversable))
+			$align = func_get_args();
+		$align = $align instanceof \Traversable ? iterator_to_array($align) : $align;
+
+		if(is_array($align))
+			foreach($align as $al)
+				$this->align[] = $al === 'center'
+					? STR_PAD_BOTH : ($al === 'right' ? STR_PAD_LEFT : STR_PAD_RIGHT);
+		else
+			$this->align = $align === 'center'
+				? STR_PAD_BOTH : ($align === 'right' ? STR_PAD_LEFT : STR_PAD_RIGHT);
 
 		return $this;
 	}
@@ -162,7 +192,8 @@ class Table {
 		IO::write('|');
 		foreach($row as $i => $col){
 			$str = IO::render(isset($this->format[$i]) && $format ? $this->format[$i] : '%s', $col);
-			IO::write(' %s |', str_pad($str, $this->columnLength[$i]));
+			$align = isset($this->align[$i]) ? $this->align[$i] : STR_PAD_RIGHT;
+			IO::write(' %s |', str_pad($str, $this->columnLength[$i], ' ', $align));
 		}
 		IO::line();
 	}
