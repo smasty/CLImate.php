@@ -181,6 +181,17 @@ class IO {
 
 
 	/**
+	 * Create a new table. See `Table::__construct()` for details on usage.
+	 * @param \Traversable|array $header
+	 * @param \Traversable[]|array[] $rows
+	 * @return Table
+	 */
+	public static function table($header = null, $rows = null){
+		return new Table($header, $rows);
+	}
+
+
+	/**
 	 * Number of columns in terminal.
 	 * @return int
 	 * @todo Better solution maybe?

@@ -31,11 +31,29 @@ class Table {
 
 	/**
 	 * Create a table.
+	 *
+	 * Three ways of usage:
+	 * 1. Headers in the first argument, rows in the second one.
+	 * 2. Only one argument - rows with string keys - keys will be used as headers.
+	 * 3. No parameters, use `setHeader()` and `setRows`/`addRow()`.
+	 * @param \Traversable|array $header
 	 * @param \Traversable[]|array[] $rows
+	 * @return void
 	 */
-	public function __construct($rows = null){
-		if($rows !== null)
+	public function __construct($header = null, $rows = null){
+		if($header){
+			if(!$rows){
+				$rows = $header instanceof \Traversable ? interator_to_array($header) : (array) $header;
+				$keys = array_keys(array_shift($rows));
+				$header = array();
+
+				foreach($keys as $h)
+					$header[$h] = $h;
+			}
+
+			$this->setHeader($header);
 			$this->setRows($rows);
+		}
 	}
 
 
@@ -91,6 +109,26 @@ class Table {
 
 
 	/**
+	 * Sort rows by given column.
+	 * @param int|string $column Column index
+	 * @param bool $reverse Sort in reverse order
+	 * @return Table fluent interface
+	 * @throws \InvalidArgumentException
+	 */
+	public function sort($column, $reverse = false){
+		if(!isset($this->header[$column]))
+			throw new \InvalidArgumentException("No such column '$column' to sort by.");
+
+		usort($this->rows, function($a, $b) use($column, $reverse){
+			if($reverse)
+				list($a, $b) = array($b, $a);
+			return strcmp($a[$column], $b[$column]);
+		});
+		return $this;
+	}
+
+
+	/**
 	 * Set format of the row values. Either as an array or as a list of arguments.
 	 * @param \Traversable|array $format
 	 * @return Table fluent interface
@@ -123,8 +161,12 @@ class Table {
 		if($format !== null)
 			call_user_func_array(array($this, 'setFormat'), func_get_args());
 
-		if(!is_array($this->align))
-			$this->align = array_fill(0, count($this->header), $this->align);
+		if(!is_array($this->align)){
+			$align = array();
+			foreach(array_keys($this->header) as $key)
+				$align[$key] = $this->align;
+			$this->align = $align;
+		}
 
 		// Compute length of columns
 		$this->setColumnLength($this->header, false);
@@ -151,13 +193,14 @@ class Table {
 	 * @return Table fluent interface
 	 */
 	public function align($align){
-		if(func_num_args() > 1 && !is_array($a = func_get_arg(0)) && !($a instanceof \Traversable))
+		if($align instanceof \Traversable)
+			$align = iterator_to_array($align);
+		elseif(func_num_args() > 1)
 			$align = func_get_args();
-		$align = $align instanceof \Traversable ? iterator_to_array($align) : $align;
 
 		if(is_array($align))
-			foreach($align as $al)
-				$this->align[] = $al === 'center'
+			foreach($align as $k => $al)
+				$this->align[$k] = $al === 'center'
 					? STR_PAD_BOTH : ($al === 'right' ? STR_PAD_LEFT : STR_PAD_RIGHT);
 		else
 			$this->align = $align === 'center'
@@ -172,7 +215,6 @@ class Table {
 	 * @return void
 	 */
 	protected function renderHeader(){
-		$length = 3 * count($this->header) + array_sum($this->columnLength) + 1;
 		$this->renderRow($this->header, false);
 
 		IO::write('|');
