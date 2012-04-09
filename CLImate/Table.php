@@ -8,7 +8,6 @@ namespace CLImate;
 
 /**
  * Class for presenting tabular data.
- * @todo sort()
  */
 class Table {
 
