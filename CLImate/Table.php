@@ -8,7 +8,7 @@ namespace CLImate;
 
 /**
  * Class for presenting tabular data.
- * @todo Refactodtor render() - resetDisplay(), setFormat(), set STR_PAD.
+ * @todo Refactor render() - resetDisplay(), setFormat(), set STR_PAD.
  * @todo sort()
  */
 class Table {
@@ -89,14 +89,14 @@ class Table {
 
 
 	/**
-	 * Render the table.
+	 * Set format of the row values. Either as an array or as a list of arguments.
+	 * @param \Traversable|array $format
 	 * @return Table fluent interface
+	 * @throws \InvalidArgumentException
 	 */
-	public function render($format = null){
-		// Reset format and column length
+	public function setFormat($format = null){
 		$this->format = $this->columnLength = array();
 
-		// Format as array or list of arguments
 		if(func_num_args() >= 1 && !is_array($a = func_get_arg(0)) && !($a instanceof \Traversable))
 			$format = func_get_args();
 
@@ -107,6 +107,19 @@ class Table {
 				throw new \InvalidArgumentException('Format must be an array or a Traversable instance.');
 			$this->format = $format;
 		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Render the table. And optionally set format of the row values.
+	 * @param \Traversable|array $format
+	 * @return Table fluent interface
+	 */
+	public function render($format = null){
+		if($format !== null)
+			call_user_func_array(array($this, 'setFormat'), func_get_args());
 
 		// Compute length of columns
 		$this->setColumnLength($this->header, false);
