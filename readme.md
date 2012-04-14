@@ -1,5 +1,6 @@
 # CLI mate - Your mate for PHP CLI apps. (Early dev stage).
 
+[![Build Status](https://secure.travis-ci.org/smasty/CLImate.png?branch=master)](http://travis-ci.org/smasty/CLImate)
 
 ## Implemented features
 
