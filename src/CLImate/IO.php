@@ -12,6 +12,16 @@ namespace CLImate;
 class IO {
 
 
+	/** @var resource Standard output resource */
+	public static $stdOut = STDOUT;
+
+	/** @var resource Standard input resource */
+	public static $stdIn = STDIN;
+
+	/** @var resource Standard error resource */
+	public static $stdErr = STDERR;
+
+
 	/**
 	 * Render given text.
 	 * @param string $text
@@ -39,7 +49,7 @@ class IO {
 	 * @return int|FALSE
 	 */
 	public static function write($text){
-		return fwrite(STDOUT, call_user_func_array('static::render', func_get_args()));
+		return fwrite(static::$stdOut, call_user_func_array('static::render', func_get_args()));
 	}
 
 
@@ -74,7 +84,7 @@ class IO {
 	public static function error($message){
 		$args = func_get_args();
 		array_shift($args);
-		return fwrite(STDERR, call_user_func_array('static::render', func_get_args()));
+		return fwrite(static::$stdErr, call_user_func_array('static::render', func_get_args()));
 	}
 
 
@@ -86,9 +96,9 @@ class IO {
 	 */
 	public static function read($format = null){
 		if($format)
-			fscanf(STDIN, $format . "\n", $line);
+			fscanf(static::$stdIn, $format . "\n", $line);
 		else
-			$line = fgets(STDIN);
+			$line = fgets(static::$stdIn);
 
 		if($line === false)
 			throw new InputException('Caught ^D during input');
