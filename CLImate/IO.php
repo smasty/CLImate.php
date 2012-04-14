@@ -82,7 +82,7 @@ class IO {
 	 * Read from standard input.
 	 * @param string $format Format of input (see sscanf() for details).
 	 * @return string
-	 * @throws \Exception If ^D is caught during input.
+	 * @throws InputException If ^D is caught during input.
 	 */
 	public static function read($format = null){
 		if($format)
@@ -91,7 +91,7 @@ class IO {
 			$line = fgets(STDIN);
 
 		if($line === false)
-			throw new \Exception('Caught ^D during input');
+			throw new InputException('Caught ^D during input');
 
 		return trim($line);
 	}
