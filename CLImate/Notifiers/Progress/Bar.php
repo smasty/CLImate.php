@@ -17,6 +17,8 @@ class Bar extends CLImate\Notifiers\Progress {
 
 	/** @var string */
 	protected $formatBefore = '{:msg} {:percent}% [';
+
+	/** @var string */
 	protected $formatAfter = '] {:time}';
 
 	/** @var string */
@@ -45,9 +47,10 @@ class Bar extends CLImate\Notifiers\Progress {
 
 	/**
 	 * Display progress bar.
-	 * @return void
+	 * @param $return Return the notifier insted of printing it.
+	 * @return void|string
 	 */
-	public function display(){
+	public function display($return = false){
 		$elapsed = $this->elapsed();
 		$estimated = $this->estimate();
 		$remaining = $estimated - $elapsed;
@@ -70,6 +73,10 @@ class Bar extends CLImate\Notifiers\Progress {
 		$bar = str_repeat($this->bar[0], floor($size * $this->percentage())) . $this->bar[$this->last ? 0 : 1];
 		$bar = substr(str_pad($bar, $size), 0, $size);
 
+		if($return)
+			return IO::render($before . $bar . $after);
+
+		IO::cr();
 		IO::write($before . $bar . $after);
 	}
 

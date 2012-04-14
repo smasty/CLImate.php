@@ -56,9 +56,10 @@ class Dots extends CLImate\Notifier {
 
 	/**
 	 * Render the notificator.
-	 * @return void
+	 * @param $return Return the notification instead of printing it.
+	 * @return void|string
 	 */
-	public function display(){
+	public function display($return = false){
 		$msg = $this->message;
 		$elapsed = $this->formatTime($this->elapsed());
 		$speed = round($this->speed());
@@ -66,7 +67,13 @@ class Dots extends CLImate\Notifier {
 
 		$i = $this->last ? $this->dots-1 : $this->i++ % $this->dots;
 		$dots = str_pad(str_repeat('.', $i), $this->dots);
-		IO::write($this->format, compact('msg', 'dots', 'elapsed', 'speed', 'ticks'));
+		$args = compact('msg', 'dots', 'elapsed', 'speed', 'ticks');
+
+		if($return)
+			return IO::render($this->format, $args);
+		
+		IO::cr();
+		IO::write($this->format, $args);
 	}
 
 

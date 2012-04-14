@@ -40,9 +40,10 @@ class Spinner extends CLImate\Notifier {
 
 	/**
 	 * Render the notificator.
-	 * @return void
+	 * @param $return Return the notification instead of printing it.
+	 * @return void|string
 	 */
-	public function display(){
+	public function display($return = false){
 		$msg = $this->message;
 		$elapsed = $this->formatTime($this->elapsed());
 		$speed = round($this->speed());
@@ -50,7 +51,13 @@ class Spinner extends CLImate\Notifier {
 
 		$id = $this->i++ % strlen($this->chars);
 		$spinner = $this->last ? ' ' : $this->chars[$id];
-		IO::write($this->format, compact('msg', 'spinner', 'elapsed', 'speed', 'ticks'));
+		$args = compact('msg', 'spinner', 'elapsed', 'speed', 'ticks');
+
+		if($return)
+			return IO::render($this->format, $args);
+
+		IO::cr;
+		IO::write($this->format, $args);
 	}
 
 

@@ -47,9 +47,10 @@ abstract class Notifier {
 
 	/**
 	 * Display the notification.
-	 * @return void
+	 * @param $return Return the notification instead of printing it.
+	 * @return void|string
 	 */
-	abstract public function display();
+	abstract public function display($return = false);
 
 
 	/**
@@ -123,7 +124,6 @@ abstract class Notifier {
 		$this->increment($ticks);
 
 		if($this->shouldRefresh()){
-			IO::cr();
 			$this->display();
 		}
 	}
@@ -134,7 +134,6 @@ abstract class Notifier {
 	 * @return void
 	 */
 	public function stop(){
-		IO::cr();
 		$this->last = true;
 		$this->display();
 		IO::line();
