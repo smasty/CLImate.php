@@ -152,25 +152,27 @@ class IO {
 
 			if(stripos($choices, $input) !== false)
 				return strtolower($input);
-			elseif(!$input && $default)
-				return strtolower($default);
 		}
 	}
 
 
 	/**
 	 * Show the list of available options to choose from.
-	 * @param string[] $items Items to choose from.
+	 * @param Traversable|array $items Items to choose from.
 	 * @param int $default Index of the default option.
 	 * @param string $message Message to show under the list.
 	 * @return int Index of the chosen option.
 	 */
-	public static function menu(array $items, $default = null, $message = 'Choose an option'){
+	public static function menu($items, $default = null, $message = 'Choose an option'){
+		$items = $items instanceof \Traversable ? iterator_to_array($items) : $items;
+		if(!is_array($items))
+			throw new \InvalidArgumentException('Items must be an array or a Traversable instance.');
+
 		// Keys might not be numeric
 		$map = array_values($items);
 
 		// Format options
-		$size = strlen(count($map)+1);
+		$size = strlen(count($map));
 		foreach($map as $k => $v){
 			static::line("  %{$size}d. %s", ++$k, (string) $v);
 		}
