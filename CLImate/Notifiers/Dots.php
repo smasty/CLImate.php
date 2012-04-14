@@ -11,7 +11,6 @@ use CLImate,
 
 /**
  * Notifier showing string of dots.
- * @todo printf named args
  */
 class Dots extends CLImate\Notifier {
 
@@ -71,7 +70,7 @@ class Dots extends CLImate\Notifier {
 
 		if($return)
 			return IO::render($this->format, $args);
-		
+
 		IO::cr();
 		IO::write($this->format, $args);
 	}

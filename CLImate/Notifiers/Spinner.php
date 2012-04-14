@@ -11,7 +11,6 @@ use CLImate,
 
 /**
  * Basic ASCII spinner.
- * @todo printf named args
  */
 class Spinner extends CLImate\Notifier {
 
