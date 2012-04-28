@@ -53,15 +53,6 @@ class Color {
 		'&k' => array('color' => 'black'),
 		'&w' => array('color' => 'white'),
 
-		'&_r' => array('style' => 'bold', 'color' => 'red'),
-		'&_g' => array('style' => 'bold', 'color' => 'green'),
-		'&_b' => array('style' => 'bold', 'color' => 'blue'),
-		'&_c' => array('style' => 'bold', 'color' => 'cyan'),
-		'&_m' => array('style' => 'bold', 'color' => 'magenta'),
-		'&_y' => array('style' => 'bold', 'color' => 'yellow'),
-		'&_k' => array('style' => 'bold', 'color' => 'black'),
-		'&_w' => array('style' => 'bold', 'color' => 'white'),
-
 		'&R' => array('background' => 'red'),
 		'&G' => array('background' => 'green'),
 		'&B' => array('background' => 'blue'),
@@ -112,7 +103,7 @@ class Color {
 	 * @return string
 	 */
 	public static function colorize($text){
-		$text = preg_replace_callback('~(&_?[a-z0-9])~i', function($match){
+		$text = preg_replace_callback('~(&\w)~i', function($match){
 			return isset(static::$codes[$match[1]])
 				? static::colorCode(static::$codes[$match[1]]) : $match[1];
 		}, $text);
@@ -127,7 +118,7 @@ class Color {
 	 * @return string
 	 */
 	public static function removeColors($text){
-		$text = preg_replace_callback('~(&_?[a-z0-9])~i', function($match){
+		$text = preg_replace_callback('~(&\w)~i', function($match){
 			return isset(static::$codes[$match[1]]) ? '' : $match[1];
 		}, $text);
 

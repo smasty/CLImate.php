@@ -36,21 +36,21 @@ class ColorTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testColorize(){
-		$colored = "&rRed text &wWhite text. &RRed background. &_rRed bold.";
-		$ansi = "\e[31mRed text \e[37mWhite text. \e[41mRed background. \e[1;31mRed bold.";
+		$colored = "&rRed text &wWhite text. &RRed background. &_&rRed bold.";
+		$ansi = "\e[31mRed text \e[37mWhite text. \e[41mRed background. \e[1m\e[31mRed bold.";
 		$this->assertEquals($ansi, Color::colorize($colored));
 	}
 
 
 	public function testRemoveColors(){
-		$colored = "&rRed text &wWhite text. &RRed background. &_rRed bold.";
+		$colored = "&rRed text &wWhite text. &RRed background. &_&rRed bold.";
 		$plain = "Red text White text. Red background. Red bold.";
 		$this->assertEquals($plain, Color::removeColors($colored));
 	}
 
 
 	public function testStrlen(){
-		$colored = "&rRed text &wWhite text. &RRed background. &_rRed bold.";
+		$colored = "&rRed text &wWhite text. &RRed background. &_&rRed bold.";
 		$plain = "Red text White text. Red background. Red bold.";
 		$this->assertEquals(strlen($plain), Color::strlen($colored));
 	}
