@@ -27,6 +27,9 @@ class Table {
 	/** @var array */
 	private $columnLength = array();
 
+	/** @var array */
+	private $plainColumnLength = array();
+
 
 	/**
 	 * Create a table.
@@ -144,7 +147,7 @@ class Table {
 			$format = $format instanceof \Traversable ? iterator_to_array($format) : $format;
 			if(!is_array($format))
 				throw new \InvalidArgumentException('Format must be an array or a Traversable instance.');
-			$this->format = $format;
+			$this->format = array_map(function($v){return "$v&N";}, $format);
 		}
 
 		return $this;
@@ -218,7 +221,7 @@ class Table {
 
 		IO::write('|');
 		foreach($this->header as $i => $col)
-			IO::write('%s|', str_repeat('-', $this->columnLength[$i] + 2));
+			IO::write('%s|', str_repeat('-', $this->plainColumnLength[$i] + 2));
 		IO::line();
 	}
 
@@ -231,10 +234,11 @@ class Table {
 	 */
 	protected function renderRow(array $row, $format = true){
 		IO::write('|');
+		$colLength = $format ? $this->columnLength : $this->plainColumnLength;
 		foreach($row as $i => $col){
 			$str = IO::render(isset($this->format[$i]) && $format ? $this->format[$i] : '%s', $col);
 			$align = isset($this->align[$i]) ? $this->align[$i] : STR_PAD_RIGHT;
-			IO::write(' %s |', str_pad($str, $this->columnLength[$i], ' ', $align));
+			IO::write(' %s |', str_pad($str, $colLength[$i], ' ', $align));
 		}
 		IO::line();
 	}
@@ -249,9 +253,11 @@ class Table {
 	private function setColumnLength(array $row, $format = true){
 		foreach($row as $i => $col){
 			$len = IO::strlen(IO::render(isset($this->format[$i]) && $format ? $this->format[$i] : '%s', $col));
-			$this->columnLength[$i] = isset($this->columnLength[$i])
+			$this->columnLength[$i] = $tmp = isset($this->columnLength[$i])
 				? max($this->columnLength[$i], $len)
 				: $len;
+			$diff = strlen(Color::colorize($this->format[$i])) - Color::strlen($this->format[$i]);
+			$this->plainColumnLength[$i] = $tmp - $diff;
 		}
 	}
 
