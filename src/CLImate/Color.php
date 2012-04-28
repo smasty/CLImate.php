@@ -89,7 +89,7 @@ class Color {
 	 * @param string|array $color
 	 * @return string
 	 */
-	public static function color($color){
+	public static function colorCode($color){
 		$color = is_array($color) ? $color : array('color' => $color);
 		$color += array('style' => null, 'color' => null, 'background' => null);
 
@@ -112,8 +112,9 @@ class Color {
 	 * @return string
 	 */
 	public static function colorize($text){
-		$text = preg_replace_callback('~(&\w)~i', function($match){
-			return isset(self::$codes[$match[1]]) ? self::color(self::$codes[$match[1]]) : $match[1];
+		$text = preg_replace_callback('~(&_?[a-z0-9])~i', function($match){
+			return isset(static::$codes[$match[1]])
+				? static::colorCode(static::$codes[$match[1]]) : $match[1];
 		}, $text);
 
 		return str_replace('&&', '&', $text);
@@ -126,8 +127,8 @@ class Color {
 	 * @return string
 	 */
 	public static function removeColors($text){
-		$text = preg_replace_callback('~(&\w)~i', function($match){
-			return isset(self::$codes[$match[1]]) ? '' : $match[1];
+		$text = preg_replace_callback('~(&_?[a-z0-9])~i', function($match){
+			return isset(static::$codes[$match[1]]) ? '' : $match[1];
 		}, $text);
 
 		return str_replace('&&', '&', $text);
