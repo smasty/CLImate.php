@@ -248,7 +248,7 @@ class Table {
 	 */
 	private function setColumnLength(array $row, $format = true){
 		foreach($row as $i => $col){
-			$len = strlen(IO::render(isset($this->format[$i]) && $format ? $this->format[$i] : '%s', $col));
+			$len = IO::strlen(IO::render(isset($this->format[$i]) && $format ? $this->format[$i] : '%s', $col));
 			$this->columnLength[$i] = isset($this->columnLength[$i])
 				? max($this->columnLength[$i], $len)
 				: $len;

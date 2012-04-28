@@ -69,7 +69,7 @@ class Bar extends CLImate\Notifiers\Progress {
 		$after = IO::render($this->formatAfter, $args);
 
 		$cols = IO::columns();
-		$size = $cols - strlen($before . $after);
+		$size = $cols - IO::strlen($before . $after);
 		$bar = str_repeat($this->bar[0], floor($size * $this->percentage())) . $this->bar[$this->last ? 0 : 1];
 		$bar = substr(str_pad($bar, $size), 0, $size);
 

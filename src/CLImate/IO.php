@@ -30,6 +30,8 @@ class IO {
 	public static function render($text){
 		$args = func_get_args();
 
+		$text = $args[0] = Color::colorize($text);
+
 		if(count($args) == 1)
 			return $text;
 
@@ -210,6 +212,16 @@ class IO {
 	 */
 	public static function columns(){
 		return (int) exec('/usr/bin/env tput cols');
+	}
+
+
+	/**
+	 * Returns length of the string, taking into account color codes.
+	 * @param string $string
+	 * @return int
+	 */
+	public static function strlen($string){
+		return Color::strlen($string);
 	}
 
 

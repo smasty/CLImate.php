@@ -80,7 +80,7 @@ class SpinnerBar extends Notifiers\Progress {
 		$after = IO::render($this->formatAfter, $args);
 
 		$cols = IO::columns();
-		$size = $cols - strlen($before . $after);
+		$size = $cols - IO::strlen($before . $after);
 		$bar = str_repeat($this->bar, floor($size * $this->percentage() - ($this->last?1:0)));
 		$bar = substr(str_pad($bar, $size - 1) . $this->getSpinnerState(), 0, $size);
 
