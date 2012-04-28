@@ -8,9 +8,10 @@
 
 ### Input/Output
 
-Reading from standard input, as well as writing to standard output and error.
-Methods for prompting for questions, choosing from choices `[y/n/?]` and menus.
-Support for rendering tables (with sorting, custom row formats, etc).
+- Reading from standard input, as well as writing to standard output and error.
+- Methods for prompting for questions, choosing from choices `[y/n/?]` and menus.
+- Support for rendering tables (with sorting, custom row formats, etc).
+- Colorized output support
 
 ### Argument handling (draft)
 
@@ -27,7 +28,6 @@ Various notifiers:
 
 ## Yet to be implemented
 
-- Colorized output
 - Finish argument handling
 - Command-line applications infrastructure
 
