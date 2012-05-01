@@ -3,7 +3,11 @@
  * Copyright 2012 Martin Srank (http://smasty.net)
  */
 
-namespace CLImate;
+namespace CLImate\App;
+
+use CLImate\Arguments,
+	CLImate\IO,
+	CLImate\ApplicationException;
 
 
 class Application {
@@ -19,7 +23,7 @@ class Application {
 	public function registerCommand($command, $class){
 		if(isset($this->commands[$command]))
 			throw new ApplicationException("Command '$command' already registered.");
-		if(!is_subclass_of($class, 'CLImate\\Command'))
+		if(!is_subclass_of($class, 'CLImate\\App\\Command'))
 			throw new ApplicationException("Cannot register command: '$class' is not a valid CLImate command.");
 		$this->commands[$command] = $class;
 
