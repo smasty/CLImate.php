@@ -112,14 +112,14 @@ class Table {
 
 	/**
 	 * Sort rows by given column.
-	 * @param int|string $column Column index
+	 * @param int|string $column Column index or column header
 	 * @param bool $reverse Sort in reverse order
 	 * @return Table fluent interface
 	 * @throws \InvalidArgumentException
 	 */
 	public function sort($column, $reverse = false){
-		if(!isset($this->header[$column]))
-			throw new \InvalidArgumentException("No such column '$column' to sort by.");
+		if(!isset($this->header[$column]) && ($column = array_search($column, $this->header)) === false)
+			throw new \InvalidArgumentException("No such column '" . func_get_arg(0) . "' to sort by.");
 
 		usort($this->rows, function($a, $b) use($column, $reverse){
 			if($reverse)
