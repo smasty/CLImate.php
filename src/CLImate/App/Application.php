@@ -12,6 +12,9 @@ use CLImate\Arguments,
 
 /**
  * CLImate Application infrastructure.
+ * @todo Help
+ * @todo Application-wide options
+ * @todo Error-handling
  */
 class Application {
 
