@@ -15,6 +15,7 @@ use CLImate\Arguments,
  * @todo Help
  * @todo Application-wide options
  * @todo Error-handling
+ * @todo Tests
  */
 class Application {
 
