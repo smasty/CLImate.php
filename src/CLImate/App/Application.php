@@ -10,16 +10,29 @@ use CLImate\Arguments,
 	CLImate\ApplicationException;
 
 
+/**
+ * CLImate Application infrastructure.
+ */
 class Application {
 
 
+	/** @var array */
 	private $commands = array();
 
+	/** @var array */
 	private $commandCache = array();
 
+	/** @var string */
 	private $mainCommand;
 
 
+	/**
+	 * Registers an application command.
+	 * @param string $command Command name
+	 * @param string $class Class for the command
+	 * @return Application fluent interface
+	 * @throws ApplicationException
+	 */
 	public function registerCommand($command, $class){
 		if(isset($this->commands[$command]))
 			throw new ApplicationException("Command '$command' already registered.");
@@ -31,12 +44,24 @@ class Application {
 	}
 
 
+	/**
+	 * Registers a main command - gets executed if no command was specified.
+	 * @param string $command Command name
+	 * @param string $class Class for the command
+	 * @return Application fluent interface
+	 */
 	public function registerMainCommand($command, $class){
 		return $this->registerCommand($command, $class)
 			->setMainCommand($command);
 	}
 
 
+	/**
+	 * Sets a command as a main application command.
+	 * @param type $command Command name
+	 * @return Application fluent interface
+	 * @throws ApplicationException
+	 */
 	public function setMainCommand($command){
 		if(!isset($this->commands[$command]))
 			throw new ApplicationException("Cannot set '$command' as a main command, no such command registered.");
@@ -47,6 +72,11 @@ class Application {
 	}
 
 
+	/**
+	 * Runs the application with given command-line arguments.
+	 * @param array $args Command-line arguments (e.g. $_SERVER['argv'])
+	 * @return bool
+	 */
 	public function run(array $args){
 		array_shift($args);
 		$cmd = current($args);
@@ -73,6 +103,7 @@ class Application {
 
 
 	/**
+	 * Returns the command class instance.
 	 * @param string $command
 	 * @return Command
 	 */
@@ -83,6 +114,12 @@ class Application {
 	}
 
 
+	/**
+	 * Shows a help message.
+	 * @todo Help implementation
+	 * @param string $error
+	 * @return void
+	 */
 	protected function showHelp($error = null){
 		if($error)
 			IO::error("&r$error&N\n");

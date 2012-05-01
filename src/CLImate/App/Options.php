@@ -6,21 +6,30 @@
 namespace CLImate\App;
 
 
+
 class Options implements \ArrayAccess, \IteratorAggregate {
 
 
 	/** @var Option[] */
-	private $options;
+	private $longOptions;
 
 	/** @var Option[] */
 	private $shortOptions;
 
 
-	public function setOption(Option $option, $name = null, $shortName = null){
-		if($name === null && $shortName === null)
+	/**
+	 * Sets an option for the command.
+	 * @param Option $option
+	 * @param string $longName
+	 * @param string $shortName
+	 * @return Options fluent interface
+	 * @throws \InvalidArgumentException
+	 */
+	public function setOption(Option $option, $longName = null, $shortName = null){
+		if($longName === null && $shortName === null)
 			throw new \InvalidArgumentException('Either $name or $shortName must be specified.');
-		if($name !== null)
-			$this->options[$name] = $option;
+		if($longName !== null)
+			$this->longOptions[$longName] = $option;
 		if($shortName !== null)
 			$this->shortOptions[$shortName] = $option;
 
@@ -28,120 +37,231 @@ class Options implements \ArrayAccess, \IteratorAggregate {
 	}
 
 
+	/**
+	 * Returns an option by name.
+	 * @param string $name
+	 * @return Option
+	 */
 	public function getOption($name){
-		if(isset($this->options[$name]))
-			return $this->options[$name];
+		if(isset($this->longOptions[$name]))
+			return $this->longOptions[$name];
 		elseif(isset($this->shortOptions[$name]))
 			return $this->shortOptions[$name];
 	}
 
 
-	public function offsetGet($offset){
-		if(isset($this->options[$offset]))
-			return $this->options[$offset]->getValue();
-		elseif(isset($this->shortOptions[$offset]))
-			return $this->shortOptions[$offset]->getValue();
+	/**
+	 * Returns a value of an option.
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function offsetGet($name){
+		if(isset($this->longOptions[$name]))
+			return $this->longOptions[$name]->getValue();
+		elseif(isset($this->shortOptions[$name]))
+			return $this->shortOptions[$name]->getValue();
 	}
 
 
-	public function offsetExists($offset){
-		return isset($this->options[$offset]) || isset($this->shortOptions[$offset]);
+	/**
+	 * Returns whether an option with a given name exists or not.
+	 * @param string $name
+	 * @return bool
+	 */
+	public function offsetExists($name){
+		return isset($this->longOptions[$name]) || isset($this->shortOptions[$name]);
 	}
 
 
-	public function offsetSet($offset, $value){
-		if(isset($this->options[$offset]))
-			$this->options[$offset]->setValue($value);
-		if(isset($this->shortOptions[$offset]))
-			$this->shortOptions[$offset]->setValue($value);
+	/**
+	 * Sets a value for an option.
+	 * @param string $name
+	 * @param mixed $value
+	 * @return void
+	 */
+	public function offsetSet($name, $value){
+		if(isset($this->longOptions[$name]))
+			$this->longOptions[$name]->setValue($value);
+		if(isset($this->shortOptions[$name]))
+			$this->shortOptions[$name]->setValue($value);
 	}
 
 
-	public function offsetUnset($offset){
-		$this->offsetSet($offset, null);
+	/**
+	 * Unsets a value of an option.
+	 * @param string $name
+	 * @return void
+	 */
+	public function offsetUnset($name){
+		$this->offsetSet($name, null);
 	}
 
 
+	/**
+	 * Returns a value of an option.
+	 * @param string $name
+	 * @return mixed
+	 */
 	public function __get($name){
 		return $this->offsetGet($name);
 	}
 
 
+	/**
+	 * Returns whether an option with a given name exists or not.
+	 * @param string $name
+	 * @return bool
+	 */
 	public function __isset($name){
 		return $this->offsetExists($name);
 	}
 
 
+	/**
+	 * Sets a value for an option.
+	 * @param string $name
+	 * @param mixed $value
+	 * @return void
+	 */
 	public function __set($name, $value){
 		return $this->offsetSet($name, $value);
 	}
 
 
+	/**
+	 * Unsets a value of an option.
+	 * @param string $name
+	 * @return void
+	 */
 	public function __unset($name){
 		return $this->offsetUnset($name);
 	}
 
 
 
+	/**
+	 * Returns an iterator above all the options.
+	 * @return \AppendIterator
+	 */
 	public function getIterator(){
 		$it = new \AppendIterator;
-		$it->append(new \ArrayIterator($this->options));
+		$it->append(new \ArrayIterator($this->longOptions));
 		$it->append(new \ArrayIterator($this->shortOptions));
 		return $it;
 	}
 
 
-	public function getOptions(){
+	/**
+	 * Returns options optionally filtered by given callback.
+	 * @param callable $callback
+	 * @return \AppendIterator|\CallbackFilterIterator
+	 */
+	public function getOptions($callback = null){
+		if(is_callable($callback))
+			return $this->buildIterator($this->getIterator(), $callback);
 		return $this->getIterator();
 	}
 
 
+	/**
+	 * Returns options with long names.
+	 * @return \CallbackFilterIterator
+	 */
 	public function getLong(){
-		return new OptionIterator($this->getIterator(), function($opt){
+		return $this->buildIterator($this->getIterator(), function($opt){
 			return $opt->hasLongName();
 		});
 	}
 
 
+	/**
+	 * Returns options with short names.
+	 * @return \CallbackFilterIterator
+	 */
 	public function getShort(){
-		return new OptionIterator($this->getIterator(), function($opt){
+		return $this->buildIterator($this->getIterator(), function($opt){
 			return $opt->hasShortName();
 		});
 	}
 
 
+	/**
+	 * Returns only flag options.
+	 * @return \CallbackFilterIterator
+	 */
 	public function getFlags(){
-		return new OptionIterator($this->getIterator(), function($opt){
+		return $this->buildIterator($this->getIterator(), function($opt){
 			return $opt->isFlag();
 		});
 	}
 
 
+	/**
+	 * Returns only required options (without default value).
+	 * @return \CallbackFilterIterator
+	 */
 	public function getRequired(){
-		return new OptionIterator($this->getIterator(), function($opt){
+		return $this->buildIterator($this->getIterator(), function($opt){
 			return $opt->isRequired();
 		});
 	}
 
 
+	/**
+	 * Returns only optional options (with default value).
+	 * @return \CallbackFilterIterator
+	 */
 	public function getOptional(){
-		return new OptionIterator($this->getIterator(), function($opt){
+		return $this->buildIterator($this->getIterator(), function($opt){
 			return !$opt->isRequired();
 		});
 	}
 
 
+	/**
+	 * Returns value-only options.
+	 * @return \CallbackFilterIterator
+	 */
 	public function getValueOnly(){
-		return new OptionIterator($this->getIterator(), function($opt){
+		return $this->buildIterator($this->getIterator(), function($opt){
 			return $opt->isValueOnly();
 		});
 	}
 
 
+	/**
+	 * Returns only named options (opposite of value-only).
+	 * @return \CallbackFilterIterator
+	 */
 	public function getNamed(){
-		return new OptionIterator($this->getIterator(), function($opt){
+		return $this->buildIterator($this->getIterator(), function($opt){
 			return !$opt->isValueOnly();
 		});
+	}
+
+
+	/**
+	 * Returns only multi-value options.
+	 * @return \CallbackFilterIterator
+	 */
+	public function getMultiValue(){
+		return $this->buildIterator($this->getIterator(), function($opt){
+			return !$opt->isMultiValue();
+		});
+	}
+
+
+	/**
+	 * Build a CallbackFilterIterator depending to the PHP version.
+	 * @param \Iterator $itertator
+	 * @param callable $callback
+	 * @return \CallbackFilterIterator
+	 */
+	private function buildIterator(\Iterator $itertator, $callback){
+		if(PHP_VERSION_ID >= 50400)
+			return new \CallbackFilterIterator($itertator, $callback);
+		return new CallbackFilterIterator_PHP53($itertator, $callback);
+
 	}
 
 
@@ -149,20 +269,23 @@ class Options implements \ArrayAccess, \IteratorAggregate {
 
 
 
-class OptionIterator extends \FilterIterator {
+if(PHP_VERSION_ID < 50400){
 
-	/** @var callable */
-	private $callback;
+	/** @internal */
+	class CallbackFilterIterator_PHP53 extends \FilterIterator {
 
-	public function __construct(\Iterator $iterator, $callback){
-		if(!is_callable($callback))
-			throw new \InvalidArgumentException('Parameter $callback not callable.');
-		$this->callback = $callback;
-		parent::__construct($iterator);
+		private $callback;
+
+		public function __construct(\Iterator $iterator, $callback){
+			if(!is_callable($callback))
+				throw new \InvalidArgumentException('Invalid callback');
+			$this->callback = $callback;
+			parent::__construct($iterator);
+		}
+
+		public function accept(){
+			return call_user_func($this->callback, $this->current(), $this->key(), $this);
+		}
+
 	}
-
-	public function accept(){
-		return call_user_func($this->callback, $this->current());
-	}
-
 }
