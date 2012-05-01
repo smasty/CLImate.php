@@ -104,8 +104,8 @@ class Color {
 	 */
 	public static function colorize($text){
 		$text = preg_replace_callback('~(&\w)~i', function($match){
-			return isset(static::$codes[$match[1]])
-				? static::colorCode(static::$codes[$match[1]]) : $match[1];
+			return isset(Color::$codes[$match[1]])
+				? Color::colorCode(static::$codes[$match[1]]) : $match[1];
 		}, $text);
 
 		return str_replace('&&', '&', $text);
@@ -119,7 +119,7 @@ class Color {
 	 */
 	public static function removeColors($text){
 		$text = preg_replace_callback('~(&\w)~i', function($match){
-			return isset(static::$codes[$match[1]]) ? '' : $match[1];
+			return isset(Color::$codes[$match[1]]) ? '' : $match[1];
 		}, $text);
 
 		return str_replace('&&', '&', $text);
