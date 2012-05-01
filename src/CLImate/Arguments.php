@@ -12,12 +12,15 @@ namespace CLImate;
 class Arguments {
 
 
+	const VALUE_KEY = '__values__';
+
+
 	/**
 	 * Parse CLI arguments.
 	 * @param array $args Arguments to parse
 	 * @return array Parsed options
 	 */
-	public function parseArguments(array $args){
+	public static function parseArguments(array $args){
 		$options = array();
 		while($opt = current($args)){
 			if(
@@ -50,13 +53,17 @@ class Arguments {
 				}
 				$options[$name][] = $value;
 			}
+			// only value, without name
+			elseif(preg_match('~^(.+)$~i', $opt, $match)){
+				$options[Arguments::VALUE_KEY][] = $match[1];
+			}
 
 			next($args);
 		}
 
-		$options = array_map(function($val){
-			return count($val) > 1 ? $val : $val[0];
-		}, $options);
+		array_walk($options, function(& $val, $key){
+			$val = count($val) > 1 || $key === static::VALUE_KEY ? $val : $val[0];
+		});
 
 		return $options;
 	}
