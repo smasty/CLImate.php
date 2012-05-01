@@ -77,12 +77,18 @@ abstract class Command {
 
 	/**
 	 * Defines an option for the command.
-	 * @param string $longName Long name of the option, e.g. `sort-order`
+	 * @param string $name Long or short (one letter) name of the option
 	 * @param string $description Description of the option, will be shown in help
-	 * @param string $shortName Short name of the option (one letter), e.g. `s`
+	 * @param string $shortName Optional short name, if the first argument is a long name
 	 * @return Option
 	 */
-	protected function option($longName, $description = null, $shortName = null){
+	protected function option($name, $description = null, $shortName = null){
+		if(strlen($name) === 1){
+			$shortName = $name;
+			$longName = null;
+		}
+		else
+			$longName = $name;
 		$option = new Option(false, false, false, $longName, $shortName, $description);
 		$this->options->setOption($option, $longName, $shortName);
 		return $option;
@@ -90,26 +96,19 @@ abstract class Command {
 
 
 	/**
-	 * Defines a short-name option for the command.
-	 * @param string $shortName Short name of the option, e.g. `s`
-	 * @param string $description Description of the option, will be shown in help
-	 * @return Option
-	 */
-	protected function shortOption($shortName, $description = null){
-		$option = new Option(false, false, false, null, $shortName, $description);
-		$this->options->setOption($option, null, $shortName);
-		return $option;
-	}
-
-
-	/**
 	 * Defines a flag option for the command (can be `true` or `false`).
-	 * @param string $longName Long name of the option, e.g. `sort-order`
+	 * @param string $name Long or short (one letter) name of the option
 	 * @param string $description Description of the option, will be shown in help
-	 * @param string $shortName Short name of the option (one letter), e.g. `s`
+	 * @param string $shortName Optional short name, if the first argument is a long name
 	 * @return Option
 	 */
-	protected function flag($longName, $description = null, $shortName = null){
+	protected function flag($name, $description = null, $shortName = null){
+		if(strlen($name) === 1){
+			$shortName = $name;
+			$longName = null;
+		}
+		else
+			$longName = $name;
 		$option = new Option(true, false, false, $longName, $shortName, $description);
 		$this->options->setOption($option, $longName, $shortName);
 		return $option;
@@ -132,12 +131,18 @@ abstract class Command {
 
 	/**
 	 * Defines a multiple-value option for the command.
-	 * @param string $longName Long name of the option, e.g. `files`
+	 * @param string $name Long or short (one letter) name of the option
 	 * @param string $description Description of the option, will be shown in help
-	 * @param string $shortName Short name of the option (one letter), e.g. `f`
+	 * @param string $shortName Optional short name, if the first argument is a long name
 	 * @return Option
 	 */
-	protected function multiValueOption($longName, $description = null, $shortName = null){
+	protected function multiValueOption($name, $description = null, $shortName = null){
+		if(strlen($name) === 1){
+			$shortName = $name;
+			$longName = null;
+		}
+		else
+			$longName = $name;
 		$option = new Option(false, false, true, $longName, $shortName, $description);
 		$this->options->setOption($option, $longName, $shortName);
 		return $option;
