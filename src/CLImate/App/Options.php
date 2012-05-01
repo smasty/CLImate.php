@@ -7,6 +7,9 @@ namespace CLImate\App;
 
 
 
+/**
+ * CLImate Aplication option container.
+ */
 class Options implements \ArrayAccess, \IteratorAggregate {
 
 

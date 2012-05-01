@@ -6,11 +6,24 @@
 
 namespace CLImate\App;
 
-use CLImate\Arguments;
+use CLImate\Arguments,
+	CLImate\IO;
 
 
 /**
  * Abstract ancestor for all CLImate Application commands.
+ * @method choose() string choose(string $question, string|array $choices, string $default)
+ * @method columns() int columns()
+ * @method cr() void cr()
+ * @method error() int|FALSE error(string $message)
+ * @method line() void line(string)
+ * @method menu() int menu(array|Traversable $items, int $default, string $message)
+ * @method prompt() string prompt(strng $question, string $default, string $ending)
+ * @method read() string read(string $format)
+ * @method render() string render(string $text)
+ * @method strlen() int strlen(string $string)
+ * @method table() CLImate\Table table(array|Traversable $header, array|Traversable $rows)
+ * @method write() int|FALSE write(string $text)
  */
 abstract class Command {
 
@@ -146,6 +159,13 @@ abstract class Command {
 		$option = new Option(false, false, true, $longName, $shortName, $description);
 		$this->options->setOption($option, $longName, $shortName);
 		return $option;
+	}
+
+
+	public function __call($name, $args){
+		if(method_exists('CLImate\\IO', $name)){
+			return call_user_func_array(array('CLImate\\IO', $name), $args);
+		}
 	}
 
 

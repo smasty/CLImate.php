@@ -6,6 +6,9 @@
 namespace CLImate\App;
 
 
+/**
+ * Command option in CLImate Application.
+ */
 class Option {
 
 
@@ -40,6 +43,15 @@ class Option {
 	private $defaultValue;
 
 
+	/**
+	 * Constructs an option.
+	 * @param bool $flag
+	 * @param bool $valueOnly
+	 * @param bool $multiValue
+	 * @param string $longName
+	 * @param string $shortName
+	 * @param string $description
+	 */
 	public function __construct($flag, $valueOnly, $multiValue, $longName = null, $shortName = null, $description = null){
 		$this->flag = (bool) $flag;
 		$this->valueOnly = (bool) $valueOnly;
@@ -50,76 +62,146 @@ class Option {
 	}
 
 
+	/**
+	 * Returns long name.
+	 * @return string
+	 */
 	public function getLongName(){
 		return $this->longName;
 	}
 
 
+	/**
+	 * Returns short name.
+	 * @return string
+	 */
 	public function getShortName(){
 		return $this->shortName;
 	}
 
 
+	/**
+	 * Returns name - long or short.
+	 * @return string
+	 */
+	public function getName(){
+		return $this->longName ?: $this->shortName;
+	}
+
+
+	/**
+	 * Returns value.
+	 * @return string
+	 */
 	public function getValue(){
 		return $this->value ?: $this->defaultValue;
 	}
 
 
+	/**
+	 * Returns allowed values.
+	 * @return array
+	 */
 	public function getAllowedValues(){
 		return $this->allowedValues;
 	}
 
 
+	/**
+	 * Returns default value.
+	 * @return string
+	 */
 	public function getDefaultValue(){
 		return $this->defaultValue;
 	}
 
 
+	/**
+	 * Returns description.
+	 * @return string
+	 */
 	public function getDescription(){
 		return $this->description;
 	}
 
 
+	/**
+	 * Returns value placeholder for help.
+	 * @return string
+	 */
 	public function getPlaceholder(){
 		return $this->placeholder ?: strtoupper($this->longName ?: 'value');
 	}
 
 
+	/**
+	 * Is required?
+	 * @return bool
+	 */
 	public function isRequired(){
 		return $this->defaultValue !== null;
 	}
 
 
+	/**
+	 * Is flag?
+	 * @return bool
+	 */
 	public function isFlag(){
 		return $this->flag;
 	}
 
 
+	/**
+	 * Is value-only?
+	 * @return bool
+	 */
 	public function isValueOnly(){
 		return $this->valueOnly;
 	}
 
 
+	/**
+	 * Is multi-value?
+	 * @return bool
+	 */
 	public function isMultiValue(){
 		return $this->multiValue;
 	}
 
 
+	/**
+	 * Has long name?
+	 * @return bool
+	 */
 	public function hasLongName(){
 		return (bool) $this->longName;
 	}
 
 
+	/**
+	 * Has short name?
+	 * @return bool
+	 */
 	public function hasShortName(){
 		return (bool) $this->shortName;
 	}
 
 
+	/**
+	 * Has value?
+	 * @return bool
+	 */
 	public function hasValue(){
 		return (bool) $this->value;
 	}
 
 
+	/**
+	 * Sets value.
+	 * @param mixed $value
+	 * @return void
+	 */
 	public function setValue($value){
 		if($this->flag)
 			$this->value = (bool) $value;
@@ -139,26 +221,50 @@ class Option {
 	}
 
 
+	/**
+	 * Sets allowed values. Either an array or a list of arguments.
+	 * @param array $allowedValues
+	 * @return void
+	 */
 	public function allow($allowedValues){
 		$this->allowedValues = is_array($allowedValues) ? $allowedValues : func_get_args();
 	}
 
 
+	/**
+	 * Sets default value.
+	 * @param string $defaultValue
+	 * @return void
+	 */
 	public function defaultValue($defaultValue){
 		$this->defaultValue = $defaultValue;
 	}
 
 
+	/**
+	 * Sets description.
+	 * @param string $description
+	 * @return void
+	 */
 	public function description($description){
 		$this->description = $description;
 	}
 
 
+	/**
+	 * Sets value placeholder for help.
+	 * @param string $placeholder
+	 * @return void
+	 */
 	public function placeholder($placeholder){
 		$this->placeholder = $placeholder;
 	}
 
 
+	/**
+	 * Returns string respresenation of value, if possible.
+	 * @return string
+	 */
 	public function __toString(){
 		return $this->multiValue ? '' : (string) $this->value;
 	}

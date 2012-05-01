@@ -30,7 +30,7 @@ class IO {
 	public static function render($text){
 		$args = func_get_args();
 
-		$text = $args[0] = Color::colorize($text);
+		$text = $args[0] = Color::colorize($text . '&N');
 
 		if(count($args) == 1)
 			return $text;
