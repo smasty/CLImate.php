@@ -31,31 +31,34 @@ abstract class Command {
 	/** @var array given command-line arguments in raw format. */
 	protected $arguments;
 
-
 	/** @var Options */
 	protected $options;
 
 
 	/**
 	 * Initializes the command.
-	 * @return void
 	 */
 	public function __construct(){
 		$this->options = new Options;
+		$this->registerOptions();
 	}
 
 
 	/**
 	 * Invokes the command.
-	 * @return void
 	 */
 	abstract public function invoke();
 
 
 	/**
+	 * Register command options.
+	 */
+	abstract public function registerOptions();
+
+
+	/**
 	 * Parses given command-line arguments according to specified setting.
 	 * @param array $arguments
-	 * @return void
 	 */
 	public function parseOptions(array $arguments){
 		$this->arguments = $arguments;
@@ -66,7 +69,7 @@ abstract class Command {
 			}
 		}
 
-		if(is_array($arguments[Arguments::VALUE_KEY]))
+		if(isset($arguments[Arguments::VALUE_KEY]) && is_array($arguments[Arguments::VALUE_KEY]))
 			foreach($this->options->getValueOnly() as $name => $option){
 				if($option->isMultiValue()){
 					$option->setValue($arguments[Arguments::VALUE_KEY]);
