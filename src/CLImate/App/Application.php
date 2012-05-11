@@ -122,7 +122,6 @@ class Application {
 	 * Shows a help message.
 	 * @todo Help implementation
 	 * @param string $error
-	 * @return void
 	 */
 	protected function showHelp($error = null){
 		if($error)

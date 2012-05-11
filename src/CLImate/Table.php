@@ -40,7 +40,6 @@ class Table {
 	 * 3. No parameters, use `setHeader()` and `setRows`/`addRow()`.
 	 * @param \Traversable|array $header
 	 * @param \Traversable[]|array[] $rows
-	 * @return void
 	 */
 	public function __construct($header = null, $rows = null){
 		if($header){
@@ -214,7 +213,6 @@ class Table {
 
 	/**
 	 * Render table header.
-	 * @return void
 	 */
 	protected function renderHeader(){
 		$this->renderRow($this->header, false);
@@ -230,7 +228,6 @@ class Table {
 	 * Render table row.
 	 * @param array $row
 	 * @param bool $format Format row values?
-	 * @return void
 	 */
 	protected function renderRow(array $row, $format = true){
 		IO::write('|');
@@ -248,7 +245,6 @@ class Table {
 	 * Set lengths for columns.
 	 * @param array $row
 	 * @param bool $format Count format as well?
-	 * @return void
 	 */
 	private function setColumnLength(array $row, $format = true){
 		foreach($row as $i => $col){

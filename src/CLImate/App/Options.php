@@ -80,7 +80,6 @@ class Options implements \ArrayAccess, \IteratorAggregate {
 	 * Sets a value for an option.
 	 * @param string $name
 	 * @param mixed $value
-	 * @return void
 	 */
 	public function offsetSet($name, $value){
 		if(isset($this->longOptions[$name]))
@@ -93,7 +92,6 @@ class Options implements \ArrayAccess, \IteratorAggregate {
 	/**
 	 * Unsets a value of an option.
 	 * @param string $name
-	 * @return void
 	 */
 	public function offsetUnset($name){
 		$this->offsetSet($name, null);
@@ -124,7 +122,6 @@ class Options implements \ArrayAccess, \IteratorAggregate {
 	 * Sets a value for an option.
 	 * @param string $name
 	 * @param mixed $value
-	 * @return void
 	 */
 	public function __set($name, $value){
 		return $this->offsetSet($name, $value);
@@ -134,7 +131,6 @@ class Options implements \ArrayAccess, \IteratorAggregate {
 	/**
 	 * Unsets a value of an option.
 	 * @param string $name
-	 * @return void
 	 */
 	public function __unset($name){
 		return $this->offsetUnset($name);

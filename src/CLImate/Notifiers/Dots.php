@@ -29,7 +29,6 @@ class Dots extends CLImate\Notifier {
 	 * @param string $message Message to display next to dots
 	 * @param int $dots Number of dots to iterate through
 	 * @param int $interval Refresh interval in miliseconds
-	 * @return void
 	 * @throws \InvalidArgumentException
 	 */
 	public function __construct($message, $dots = 3, $interval = 300){
@@ -46,7 +45,6 @@ class Dots extends CLImate\Notifier {
 	 * Availble named arguments: `msg`, `dots`, `elapsed`, `speed`, `ticks`.
 	 * Default is `{:msg} {:dots}  ({:elapsed}, {:speed}/s)`.
 	 * @param string $format
-	 * @return void
 	 */
 	public function format($format){
 		$this->format = $format;
@@ -56,7 +54,7 @@ class Dots extends CLImate\Notifier {
 	/**
 	 * Render the notificator.
 	 * @param $return Return the notification instead of printing it.
-	 * @return void|string
+	 * @return null|string
 	 */
 	public function display($return = false){
 		$msg = $this->message;

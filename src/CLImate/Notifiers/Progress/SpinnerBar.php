@@ -44,7 +44,6 @@ class SpinnerBar extends Notifiers\Progress {
 	 * @param string $bar Format of the bar. Default is `=`. Use only one character.
 	 * @param string $before Format of the part before the bar. Default is `{:msg} |`.
 	 * @param string $after Format of the part after the bar. Default is ` {:percent}% ({:time})`.
-	 * @return void
 	 */
 	public function format($bar = null, $before = null, $after = null){
 		if($bar !== null)
@@ -59,7 +58,7 @@ class SpinnerBar extends Notifiers\Progress {
 	/**
 	 * Display progress bar.
 	 * @param $return Return the notifier instead of printing it.
-	 * @return void|string
+	 * @return null|string
 	 */
 	public function display($return = false){
 		$elapsed = $this->elapsed();

@@ -58,7 +58,6 @@ class IO {
 	/**
 	 * Write given text to standard output and append a newline. Supports sprintf() syntax.
 	 * @param string $text
-	 * @return void
 	 */
 	public static function line($text = ''){
 		$args = func_get_args();
@@ -69,7 +68,6 @@ class IO {
 
 	/**
 	 * Carriage return.
-	 * @return void
 	 */
 	public static function cr(){
 		return static::write("\r");

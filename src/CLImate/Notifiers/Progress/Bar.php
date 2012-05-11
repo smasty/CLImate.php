@@ -33,7 +33,6 @@ class Bar extends CLImate\Notifiers\Progress {
 	 * @param string $bar Format of the bar. Default is `=>`. Use only two characters.
 	 * @param string $before Format of the part before the bar. Default is `{:msg} {:percent}% [`.
 	 * @param string $after Format of the part after the bar. Default is `] {:time}`.
-	 * @return void
 	 */
 	public function format($bar = null, $before = null, $after = null){
 		if($bar !== null)
@@ -48,7 +47,7 @@ class Bar extends CLImate\Notifiers\Progress {
 	/**
 	 * Display progress bar.
 	 * @param $return Return the notifier insted of printing it.
-	 * @return void|string
+	 * @return null|string
 	 */
 	public function display($return = false){
 		$elapsed = $this->elapsed();

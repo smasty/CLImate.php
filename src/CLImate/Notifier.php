@@ -34,7 +34,6 @@ abstract class Notifier {
 	 * Create the notifier.
 	 * @param string $message Message to display
 	 * @param int $interval Refresh interval
-	 * @return void
 	 */
 	public function __construct($message, $interval = 100){
 		$this->message = (string) $message;
@@ -48,7 +47,7 @@ abstract class Notifier {
 	/**
 	 * Display the notification.
 	 * @param $return Return the notification instead of printing it.
-	 * @return void|string
+	 * @return null|string
 	 */
 	abstract public function display($return = false);
 
@@ -108,7 +107,6 @@ abstract class Notifier {
 	/**
 	 * Increase the number of performed ticks by given value.
 	 * @param int $num
-	 * @return void
 	 */
 	protected function increment($num = 1){
 		$this->iterator += $num;
@@ -118,7 +116,6 @@ abstract class Notifier {
 	/**
 	 * Perform a tick.
 	 * @param int $interval Number of ticks to perform
-	 * @return void
 	 */
 	public function tick($ticks = 1){
 		$this->increment($ticks);
@@ -131,7 +128,6 @@ abstract class Notifier {
 
 	/**
 	 * Stop the notifier. Should be called after the last tick.
-	 * @return void
 	 */
 	public function stop(){
 		$this->last = true;

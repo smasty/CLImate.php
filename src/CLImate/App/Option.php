@@ -200,7 +200,6 @@ class Option {
 	/**
 	 * Sets value.
 	 * @param mixed $value
-	 * @return void
 	 */
 	public function setValue($value){
 		if($this->flag)
@@ -224,7 +223,6 @@ class Option {
 	/**
 	 * Sets allowed values. Either an array or a list of arguments.
 	 * @param array $allowedValues
-	 * @return void
 	 */
 	public function allow($allowedValues){
 		$this->allowedValues = is_array($allowedValues) ? $allowedValues : func_get_args();
@@ -234,7 +232,6 @@ class Option {
 	/**
 	 * Sets default value.
 	 * @param string $defaultValue
-	 * @return void
 	 */
 	public function defaultValue($defaultValue){
 		$this->defaultValue = $defaultValue;
@@ -244,7 +241,6 @@ class Option {
 	/**
 	 * Sets description.
 	 * @param string $description
-	 * @return void
 	 */
 	public function description($description){
 		$this->description = $description;
@@ -254,7 +250,6 @@ class Option {
 	/**
 	 * Sets value placeholder for help.
 	 * @param string $placeholder
-	 * @return void
 	 */
 	public function placeholder($placeholder){
 		$this->placeholder = $placeholder;

@@ -30,7 +30,6 @@ class Spinner extends CLImate\Notifier {
 	 * Availble named arguments: `msg`, `spinner`, `elapsed`, `speed`, `ticks`.
 	 * Default is `{:msg} {:spinner}  ({:elapsed}, {:speed}/s)`.
 	 * @param string $format
-	 * @return void
 	 */
 	public function format($format){
 		$this->format = $format;
@@ -40,7 +39,7 @@ class Spinner extends CLImate\Notifier {
 	/**
 	 * Render the notificator.
 	 * @param $return Return the notification instead of printing it.
-	 * @return void|string
+	 * @return null|string
 	 */
 	public function display($return = false){
 		$msg = $this->message;

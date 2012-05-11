@@ -25,7 +25,6 @@ abstract class Progress extends CLImate\Notifier {
 	 * @param int $total  Total number of ticks to be performed
 	 * @param int $interval Refresh interval
 	 * @throws \InvalidArgumentException
-	 * @return void
 	 */
 	public function __construct($message, $total, $interval = 100){
 		$this->total = (int) $total;
