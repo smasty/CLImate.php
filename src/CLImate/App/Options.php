@@ -53,6 +53,11 @@ class Options implements \ArrayAccess, \IteratorAggregate {
 	}
 
 
+	public function isEmpty(){
+		return $this->longOptions == array() && $this->shortOptions == array();
+	}
+
+
 	/**
 	 * Returns a value of an option.
 	 * @param string $name
@@ -144,8 +149,10 @@ class Options implements \ArrayAccess, \IteratorAggregate {
 	 */
 	public function getIterator(){
 		$it = new \AppendIterator;
-		$it->append(new \ArrayIterator($this->longOptions));
-		$it->append(new \ArrayIterator($this->shortOptions));
+		if(!empty($this->longOptions))
+			$it->append(new \ArrayIterator($this->longOptions));
+		if(!empty($this->shortOptions))
+			$it->append(new \ArrayIterator($this->shortOptions));
 		return $it;
 	}
 

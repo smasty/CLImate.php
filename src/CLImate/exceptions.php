@@ -19,6 +19,6 @@ class InputException extends CLImateException {}
 
 
 /**
- * CLImate\Application-specific exception.
+ * CLImate\App-specific exception.
  */
-class ApplicationException extends CLImateException {}
+class AppException extends CLImateException {}

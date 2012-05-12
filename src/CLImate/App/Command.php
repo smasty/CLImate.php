@@ -7,7 +7,8 @@
 namespace CLImate\App;
 
 use CLImate\Arguments,
-	CLImate\IO;
+	CLImate\IO,
+	CLImate\AppException;
 
 
 /**
@@ -24,60 +25,60 @@ use CLImate\Arguments,
  * @method strlen() int strlen(string $string)
  * @method table() CLImate\Table table(array|Traversable $header, array|Traversable $rows)
  * @method write() int|FALSE write(string $text)
+ *
+ * @todo Help
+ * @todo Error-handling
+ * @todo Tests
+ * @todo Unknown/required arguments check
+ * @todo Do not pass parent arguments to children
  */
-abstract class Command {
-
-
-	/** @var array given command-line arguments in raw format. */
-	protected $arguments;
+class Command {
 
 	/** @var Options */
 	protected $options;
 
+	protected $scriptName;
 
-	/**
-	 * Initializes the command.
-	 */
-	public function __construct(){
-		$this->options = new Options;
-		$this->registerOptions();
-	}
+	/** @var Command */
+	private $parent;
+
+	private $commands = array();
+
+	private $commandCache = array();
 
 
 	/**
 	 * Invokes the command.
 	 */
-	abstract public function invoke();
+	public function invoke(){
+
+	}
 
 
 	/**
-	 * Register command options.
+	 * Registers command options.
 	 */
-	abstract public function registerOptions();
+	public function registerOptions(){
+
+	}
 
 
 	/**
-	 * Parses given command-line arguments according to specified setting.
-	 * @param array $arguments
+	 * Initializes the command.
 	 */
-	public function parseOptions(array $arguments){
-		$this->arguments = $arguments;
+	public function __construct(Command $parent = null){
+		$this->options = new Options;
+		$this->registerOptions();
+		if($parent !== null)
+			$this->parent = $parent;
+	}
 
-		foreach($this->options as $name => $option){
-			if(isset($arguments[$name])){
-				$option->setValue($arguments[$name]);
-			}
-		}
 
-		if(isset($arguments[Arguments::VALUE_KEY]) && is_array($arguments[Arguments::VALUE_KEY]))
-			foreach($this->options->getValueOnly() as $name => $option){
-				if($option->isMultiValue()){
-					$option->setValue($arguments[Arguments::VALUE_KEY]);
-					break;
-				}
-				$option->setValue(current($arguments[Arguments::VALUE_KEY]));
-				next($arguments[Arguments::VALUE_KEY]);
-			}
+	public function __call($name, $args){
+		if(method_exists('CLImate\\IO', $name)){
+			return call_user_func_array(array('CLImate\\IO', $name), $args);
+		} else
+			throw new \BadMethodCallException("Call to undefined method " . get_class($this) . "::$name()");
 	}
 
 
@@ -98,7 +99,7 @@ abstract class Command {
 	 * @param string $shortName Optional short name, if the first argument is a long name
 	 * @return Option
 	 */
-	protected function option($name, $description = null, $shortName = null){
+	public function option($name, $description = null, $shortName = null){
 		if(strlen($name) === 1){
 			$shortName = $name;
 			$longName = null;
@@ -118,7 +119,7 @@ abstract class Command {
 	 * @param string $shortName Optional short name, if the first argument is a long name
 	 * @return Option
 	 */
-	protected function flag($name, $description = null, $shortName = null){
+	public function flag($name, $description = null, $shortName = null){
 		if(strlen($name) === 1){
 			$shortName = $name;
 			$longName = null;
@@ -138,7 +139,7 @@ abstract class Command {
 	 * @param bool $multiple Allow multiple values for the option (returned as an array)
 	 * @return Option
 	 */
-	protected function valueOption($name, $description = null, $multiple = false){
+	public function valueOption($name, $description = null, $multiple = false){
 		$option = new Option(false, true, $multiple, $name, null, $description);
 		$this->options->setOption($option, $name);
 		return $option;
@@ -152,7 +153,7 @@ abstract class Command {
 	 * @param string $shortName Optional short name, if the first argument is a long name
 	 * @return Option
 	 */
-	protected function multiValueOption($name, $description = null, $shortName = null){
+	public function multiValueOption($name, $description = null, $shortName = null){
 		if(strlen($name) === 1){
 			$shortName = $name;
 			$longName = null;
@@ -165,10 +166,95 @@ abstract class Command {
 	}
 
 
-	public function __call($name, $args){
-		if(method_exists('CLImate\\IO', $name)){
-			return call_user_func_array(array('CLImate\\IO', $name), $args);
+	public function addCommand($name, $class){
+		if(isset($this->commands[$name]))
+			throw new AppException("Command '$name' already registered.");
+		if(!is_subclass_of($class, 'CLImate\\App\\Command'))
+			throw new AppException("Cannot register command: '$class' is not a valid CLImate command.");
+		$this->commands[$name] = $class;
+
+		return $this;
+	}
+
+
+	/**
+	 *
+	 * @param string $name
+	 * @return Command
+	 */
+	public function getCommand($name){
+		if(isset($this->commandCache[$name]))
+			return $this->commandCache[$name];
+		return $this->commandCache[$name] = new $this->commands[$name]($this);
+	}
+
+
+	public function getParent(){
+		return $this->parent;
+	}
+
+
+	public function hasCommands(){
+		return !empty($this->commands);
+	}
+
+
+	public function run(array $argv){
+		if($this->getParent() === null)
+			$this->scriptName = array_shift($argv);
+
+		if($this->hasCommands()){
+			$cmd = current($argv);
+			// Non-existent command
+			if($cmd && $cmd{0} !== '-' && !isset($this->commands[$cmd]))
+				throw new AppException("Command '$cmd' does not exist");
+
+			// No command, arguments only or no arguments
+			if(($cmd && $cmd{0} === '-') || !$cmd){
+				$this->init($argv);
+			}
+
+			// Command
+			if($cmd && isset($this->commands[$cmd])){
+				array_shift($argv);
+				$this->init($argv);
+				$this->getCommand($cmd)->run($argv);
+			}
+		} else
+			$this->init($argv);
+	}
+
+
+	private function init(array $argv){
+		$arguments = Arguments::parseArguments($argv);
+		$this->parseArguments($arguments);
+		$this->invoke();
+	}
+
+
+	/**
+	 * Parses given command-line arguments according to specified settings.
+	 * @param array $arguments
+	 */
+	private function parseArguments(array $arguments){
+		if(empty($arguments))
+			return;
+
+		foreach($this->options as $name => $option){
+			if(isset($arguments[$name])){
+				$option->setValue($arguments[$name]);
+			}
 		}
+
+		if(isset($arguments[Arguments::VALUE_KEY]) && is_array($arguments[Arguments::VALUE_KEY]))
+			foreach($this->options->getValueOnly() as $name => $option){
+				if($option->isMultiValue()){
+					$option->setValue($arguments[Arguments::VALUE_KEY]);
+					break;
+				}
+				$option->setValue(current($arguments[Arguments::VALUE_KEY]));
+				next($arguments[Arguments::VALUE_KEY]);
+			}
 	}
 
 
