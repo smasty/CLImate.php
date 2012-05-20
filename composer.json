@@ -1,0 +1,19 @@
+{
+	"name": "smasty/CLImate.php",
+	"description": "Command-line infrastructure for PHP",
+	"keywords": ["cli", "command-line", "terminal", "consle"],
+	"homepage": "http://github.com/smasty/CLImate.php",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Smasty",
+			"homepage": "http://smasty.net"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0"
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	}
+}
