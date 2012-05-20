@@ -1,5 +1,5 @@
 {
-	"name": "smasty/CLImate.php",
+	"name": "smasty/CLImate",
 	"description": "Command-line infrastructure for PHP",
 	"keywords": ["cli", "command-line", "terminal", "consle"],
 	"homepage": "http://github.com/smasty/CLImate.php",
