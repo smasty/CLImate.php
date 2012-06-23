@@ -130,6 +130,14 @@ class IOTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testPromptEmptyDefault(){
+		$this->streamWrite("\n", $this->stdIn);
+		$choice = IO::prompt('Hello', '', ': ');
+		$this->assertEquals('Hello: ', $this->streamRead($this->stdOut));
+		$this->assertEquals('', $choice);
+	}
+
+
 	public function testChoose(){
 		$this->streamWrite('y', $this->stdIn);
 		$choice = IO::choose('Hello:', 'yn', 'n');

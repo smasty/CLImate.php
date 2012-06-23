@@ -124,7 +124,7 @@ class IO {
 		while(true){
 			static::write($question . $ending);
 			$input = static::read();
-			if($input || $default)
+			if($input || $default !== null)
 				return $input ?: $default;
 		}
 	}
