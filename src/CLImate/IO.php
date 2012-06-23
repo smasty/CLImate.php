@@ -131,6 +131,31 @@ class IO {
 
 
 	/**
+	 * Prompt the user to answer the question while hiding the answer, if possible.
+	 *
+	 * Can be used e.g. for password prompts.
+	 * If no input is given, returns empty string.
+	 * @param string $question
+	 * @param string $ending
+	 * @return string
+	 * @todo Windows support
+	 * @todo zsh support?
+	 */
+	public static function promptHidden($question, $ending = ': '){
+		// Use bash to hide input if available
+		if(trim(`/usr/bin/env bash -c 'echo ok' 2> /dev/null`) === 'ok'){
+			static::write($question . $ending);
+			$input = trim(shell_exec("/usr/bin/env bash -c 'read -s myinput && echo \$myinput'"));
+			static::line();
+			return $input;
+		}
+
+		// Use standard prompt if cannot hide input
+		return static::prompt($question, '', $ending);
+	}
+
+
+	/**
 	 * Ask the user to choose one from offered choices (case insensitive).
 	 * @param string $question
 	 * @param string|array $choices List of one-letter choices.
