@@ -143,21 +143,20 @@ class IO {
 	public static function promptHidden($question, $ending = ': '){
 		// Try to use available shells to hide input if possible
 		$commands = array(
-			'bash' => "bash -c 'read -s myinput && echo \$myinput'",
-			'zsh' => "zsh -c 'read -s myinput && echo \$myinput'",
-			'csh' => "csh -c 'stty -echo; set myinput = \$<; stty echo; echo \$myinput'",
+			'bash' => "read -s myinput && echo \$myinput",
+			'zsh' => "read -s myinput && echo \$myinput",
+			'csh' => "stty -echo; set myinput = \$<; stty echo; echo \$myinput",
 		);
-		foreach($commands as $sh => $cmd){
-			if(trim(`/usr/bin/env $sh -c 'echo ok' 2> /dev/null`) === 'ok'){
-				$command = $cmd;
-				$shell = $sh;
+		foreach($commands as $shell => $command){
+			if(trim(`/usr/bin/env $shell -c 'echo ok' 2> /dev/null`) === 'ok'){
+				$useShell = true;
 				break;
 			}
 		}
 
-		if(isset($command)){
+		if(isset($useShell)){
 			static::write($question . $ending);
-			$input = trim(`/usr/bin/env $command`);
+			$input = trim(`/usr/bin/env $shell -c '$command'`);
 			static::line();
 			return $input;
 		}
