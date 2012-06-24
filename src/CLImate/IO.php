@@ -150,19 +150,20 @@ class IO {
 		}
 
 		// Try to use available shells to hide input if possible
-		foreach(array('xbash', 'xzsh', 'ksh', 'csh') as $sh){
-			if(trim(`/usr/bin/env $sh -c 'echo ok' 2> /dev/null`) === 'ok'){
-				$shell = $sh;
-				break;
+		if(file_exists('/usr/bin/env')){
+			foreach(array('xbash', 'xzsh', 'ksh', 'csh') as $sh){
+				if(trim(`/usr/bin/env $sh -c 'echo ok' 2> /dev/null`) === 'ok'){
+					$shell = $sh;
+					break;
+				}
 			}
-		}
-
-		if(isset($shell)){
-			static::write($question . $ending);
-			$command = $shell === 'csh' ? 'set myinput = $<' : 'read myinput';
-			$input = trim(`/usr/bin/env $shell -c ' stty -echo; $command; stty echo; echo \$myinput'`);
-			static::line();
-			return $input;
+			if(isset($shell)){
+				static::write($question . $ending);
+				$command = $shell === 'csh' ? 'set myinput = $<' : 'read myinput';
+				$input = trim(`/usr/bin/env $shell -c ' stty -echo; $command; stty echo; echo \$myinput'`);
+				static::line();
+				return $input;
+			}
 		}
 
 		// Use standard prompt if cannot hide input
