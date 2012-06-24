@@ -138,11 +138,19 @@ class IO {
 	 * @param string $question
 	 * @param string $ending
 	 * @return string
-	 * @todo Windows support
 	 */
 	public static function promptHidden($question, $ending = ': '){
+		// Handle Windows
+		// hiddeninput.exe from Composer, (c) Jordi Boggiano <j.boggiano@seld.be>, MIT License.
+		if(defined('PHP_WINDOWS_VERSION_BUILD')){
+			static::write($question . $ending);
+			$input = shell_exec(__DIR__ . '\\IO\\hiddeninput.exe');
+			static::line();
+			return $input;
+		}
+
 		// Try to use available shells to hide input if possible
-		foreach(array('bash', 'zsh', 'ksh', 'csh') as $sh){
+		foreach(array('xbash', 'xzsh', 'ksh', 'csh') as $sh){
 			if(trim(`/usr/bin/env $sh -c 'echo ok' 2> /dev/null`) === 'ok'){
 				$shell = $sh;
 				break;
